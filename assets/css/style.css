@@ -1,0 +1,17 @@
+
+body{
+    background-image: url("../images/bg.jpg");    
+    background-position: top left;    
+    background-color: #e2e2e2;
+    background-size:  cover;    
+}
+.gif:hover{
+    background-color:rgb(55, 180, 230);
+    cursor: pointer;
+}
+
+button,
+form,
+input {
+  margin: 10px;
+}
