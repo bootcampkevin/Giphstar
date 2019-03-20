@@ -5,7 +5,7 @@ $(document).ready(function () {
   let giphyArray = ['The Matrix', 'The Notebook', 'Mr. Nobody', 'The Lion King'];
 
   let rating = '';
-  let baseURL = 'http://api.giphy.com/v1/gifs/search?q=';
+  let baseURL = 'https://api.giphy.com/v1/gifs/search?q=';
   let q = ''; //obtained from buttonInfo
   let apiParam = '&api_key=';
   let apiKey = 'SH5Sm7xZwnUdkahuKHmC8IIrmKfiFKKD';
