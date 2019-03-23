@@ -14,10 +14,11 @@
   <body>
     <header>      
       <nav class="navbar navbar-dark bg-dark justify-content-left">        
-        <span class="text-white"><img width="30" height="30" class="mr-2 ml-5" src="./assets/images/star.png"></span>        
-        <button id="clear-btn" class="bg-info"><span class="text-white"><img width="15" height="15" class="mr-2" src="./assets/images/mushroom.png">Clear</span></button>
+        <span class="text-white"><img width="30" height="30" class="mr-2 ml-5" src="./assets/images/star.png"></span><button id="fav-btn" class="bg-info"><span class="text-white"><img width="25" height="25" class="mr-2" src="./assets/images/fav.png">Favorites</span></button>        
+        <button id="clear-btn" class="bg-danger"><span class="text-white"><img width="20" height="20" class="mr-2" src="./assets/images/mushroom.png">Clear</span></button>
+        <button id="back-btn" class="bg-success"><span class="text-white"><img width="20" height="20" class="mr-2" src="./assets/images/mushroom.png">Go Back</span></button>
         <form class="form-inline">
-          <input class="form-control mr-sm-2 text-dark" type="search" placeholder="Yoshi" aria-label="Search" id="giphy-input">
+          <input class="form-control mr-sm-2 text-dark" type="search" placeholder="i.e. Yoshi" aria-label="Search" id="giphy-input">
           <button id="add-giphy" class="btn btn-outline-info my-2 my-sm-0" type="submit">Add Button</button>         
         </form>
       </nav>
@@ -25,16 +26,16 @@
     <nav class="navbar navbar-expand-sm bg-info navbar-dark">
         <div id="buttons-view"></div>
     </nav>
-    
+    <div id="container-header"></div>
     <div class="container mt-5">      
       
       <div class="row p-2">
       <!-- style="border: 1px solid #d2d2d2;"-->
         <div class="col p-4">        
             
-            <div class="container2 d-none">
-              <div id="favorites"></div>
-            </div>
+            
+    <div id="favorites"></div>
+            
     
     <div id="giphy-view"></div>
 

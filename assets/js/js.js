@@ -1,3 +1,7 @@
+//TODO
+//I want to add a remove button for the favorites array. 
+//I want to add local storage
+//I want to change all functions to big arrow where feasible
 
 $(document).ready(function () {
 
@@ -9,14 +13,31 @@ $(document).ready(function () {
   let q = ''; //obtained from buttonInfo  
   let apiKey = 'SH5Sm7xZwnUdkahuKHmC8IIrmKfiFKKD';
   let limit = 10;
-
+  let favs =[];
+  $('#back-btn').hide();
+  $('#clear-btn').hide();
+  $('#favorites').hide();
+  $('#fav-btn').hide();
+  
   // var xhr = $.get('http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key='+apiKey+'&limit=10');
   // xhr.done(function(data) { console.log('success got data', data); });
 
   // Generic function for capturing the giphy name from the data-attribute
   function grabFromGiphy() {
     
+    $('#favorites').hide();
+    $('#container-header').html('');
+    $('#back-btn').hide();
+    $('#clear-btn').show();
+    $('#giphy-view').show();   
+    
+    if(favs.length>0){
+      $('#fav-btn').show();
+    } 
+    
+
     q = ($(this).attr('data-name'));
+    // q =  q.replace(" ",'+');//doesn't seem to mind spaces...?
     //thanks to template literal readings...big arrow skills are my next target. and .map() 
     var queryURL = `${baseURL}${q}&api_key=${apiKey}&limit=${limit}`;
 
@@ -28,10 +49,10 @@ $(document).ready(function () {
         var payload = response.data;
        
         // $('#giphy-view').append(JSON.stringify(response));
-
+        
         //flag to prepend if checked, otherwise, propogate after clear, yo.
         if (!$('#add10').is(':checked')) {
-          clearStage();
+          $('#giphy-view').empty();
         }
 
         for (i in payload) {
@@ -88,15 +109,45 @@ $(document).ready(function () {
   }
 
   function addToFavorites() {
-    console.log($(this).parents('.giphy-div').children().eq(1).attr('src'));
-    $(this).hide();
+    // console.log($(this).parents('.giphy-div').children().eq(0).attr('src'));    
+    $(this).hide();    
+    $('#fav-btn').show();   
+        
     let fav = $(this).parents('.giphy-div');
-    $(fav).clone().appendTo('#favorites');
-    //TODO push into an array. 
-
+    // $(fav).clone().appendTo('#favorites');
+    favs.push(fav);
   }
-  function clearStage(){    
-    $('#giphy-view').empty();
+
+  function toggleForAndShowFavorites(){
+    $('#giphy-view').hide();
+    $('#favorites').show();
+    $('#container-header').html('<div class="card text-center"><h5 class="card-header">Favorites</h5></div>');
+    $('#clear-btn').hide();
+    $('#back-btn').show();
+    $('#fav-btn').hide();    
+
+    for (i in favs){     
+      var giphDiv = $('<div>');
+      giphDiv.append(favs[i]);
+      $('#favorites').prepend(giphDiv);      
+    }
+    // $('#giphy-view').prepend(giphyDiv);
+  }
+
+  function toggleAndShowMain(){
+    $('#giphy-view').show();    
+    $('#back-btn').hide();
+    $('#fav-btn').show();
+    $('#favorites').hide();
+    $('#container-header').html('');
+    $('#clear-btn').show();
+
+    
+  }
+  
+  function clearStage(){  
+    $('#clear-btn').hide();  
+    $('#giphy-view').empty();   
   }
 
   function downloadImage() {
@@ -199,6 +250,8 @@ $(document).ready(function () {
   $(document).on('mouseleave', '.gif-img', hoverExitState);
   $(document).on('click', '#btn-favorite', addToFavorites);
   $(document).on('click', '#download-img', downloadImage);
+  $(document).on('click', '#fav-btn', toggleForAndShowFavorites);
+  $(document).on('click', '#back-btn', toggleAndShowMain);
 
 
   // Calling the renderButtons function to display the initial buttons
