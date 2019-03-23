@@ -7,7 +7,7 @@ $(document).ready(function () {
   let rating = '';
   let baseURL = 'https://api.giphy.com/v1/gifs/search?q=';
   let q = ''; //obtained from buttonInfo  
-  let apiKey = 'SH5Sm7xZwnUdkahuKHmC8IIrmKfiFKKD';  
+  let apiKey = 'SH5Sm7xZwnUdkahuKHmC8IIrmKfiFKKD';
   let limit = 10;
 
   // var xhr = $.get('http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key='+apiKey+'&limit=10');
@@ -15,22 +15,27 @@ $(document).ready(function () {
 
   // Generic function for capturing the giphy name from the data-attribute
   function grabFromGiphy() {
-
-    // $('#giphy-view').empty();
+    
     q = ($(this).attr('data-name'));
     //thanks to template literal readings...big arrow skills are my next target. and .map() 
     var queryURL = `${baseURL}${q}&api_key=${apiKey}&limit=${limit}`;
+
     $.ajax({
       url: queryURL,
       method: 'GET'
     })
       .then(function (response) {
         var payload = response.data;
-        // console.log(payload);
-
+       
         // $('#giphy-view').append(JSON.stringify(response));
 
-        for (var i = 0; i < payload.length; i++) {
+        //flag to prepend if checked, otherwise, propogate after clear, yo.
+        if (!$('#add10').is(':checked')) {
+          clearStage();
+        }
+
+        for (i in payload) {
+          // for (var i = 0; i < payload.length; i++) {
 
           var giphyTitle = payload[i].title;
           var giphyRating = payload[i].rating;
@@ -47,7 +52,7 @@ $(document).ready(function () {
           giphyDiv.addClass('giphy-div');
 
           // $(giphyDiv).append('<h2>' + giphyTitle + '</h2>');
-          $(giphyDiv).append(`<p>Rating: ${giphyRating.toUpperCase()}</p>`);
+          // $(giphyDiv).append(`<p>Rating: ${giphyRating.toUpperCase()}</p>`);
 
           var img = $('<img>');
           img.attr('src', giphySrcAnimate);
@@ -57,18 +62,23 @@ $(document).ready(function () {
           img.attr('data-clicked', 'false');
           img.addClass('gif-img m-1');
           giphyDiv.append(img);
-          
+
+          $(giphyDiv).append(`<p>Rating: ${giphyRating.toUpperCase()}</p>`);
+
+
           let optionsDiv = $('<div>');
           optionsDiv.addClass('img-options');
-          
-          let options = `<a class="item" href="${giphySrcAnimate}" download><span class="mx-3"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><a class="item" href="#"><span class="mx-3"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</a>`;
+
+          let options = `<a class="item" href="${giphySrcAnimate}" download><span class="mx-2"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><div class="item" id="btn-favorite"><span class="mx-2"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</div>`;
+          // let options = `<a class="item" href="${giphySrcAnimate}" download><span class="mx-2"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><button type="button" class="btn" id="btn-favorite"><span class="mx-2"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</button>`;
           // let options = `<a class="item" href="https://www.w3schools.com/images/myw3schoolsimaffddsfge.jpg" download><span class="mx-3"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><a class="item" href="#"><span class="mx-3"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</a>`;
           //https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_a_download
+          //SO, I learned that chrome 65 and above, cross-origin download is not possible. 
+          //Firefox ONLY supports same-origin download links 
 
           optionsDiv.append(options);
           giphyDiv.append(optionsDiv);
-          
-          // $('#giphy-view').html(giphyDiv);
+
           $('#giphy-view').prepend(giphyDiv);
 
         }
@@ -77,11 +87,21 @@ $(document).ready(function () {
 
   }
 
-function addToFavorites(){
-  console.log('favorites adding');  
-  console.log($(this).parent().parent());
-  
-}
+  function addToFavorites() {
+    console.log($(this).parents('.giphy-div').children().eq(1).attr('src'));
+    $(this).hide();
+    let fav = $(this).parents('.giphy-div');
+    $(fav).clone().appendTo('#favorites');
+    //TODO push into an array. 
+
+  }
+  function clearStage(){    
+    $('#giphy-view').empty();
+  }
+
+  function downloadImage() {
+
+  }
 
   // Function for displaying giphy data
   function renderButtons() {
@@ -91,13 +111,11 @@ function addToFavorites(){
     $('#buttons-view').empty();
 
     // Looping through the array of giphys
-    for (var i = 0; i < giphyArray.length; i++) {
+    for (i in giphyArray) {
       var appendButton = $('<button>');
       appendButton.addClass('gif-btn');
       appendButton.attr('data-name', giphyArray[i]);
-      // Provided the initial button text
       appendButton.text(giphyArray[i]);
-      // Added the button to the HTML
       $('#buttons-view').append(appendButton);
     }
   }
@@ -114,7 +132,7 @@ function addToFavorites(){
     if (state === 'still' && $(this).attr('data-clicked') !== 'false') {
       $(this).attr('src', $(this).attr('data-animate'));
       $(this).attr('data-state', 'animate');
-    } 
+    }
     else if (state === 'animate' && $(this).attr('data-clicked') !== 'true') {
       $(this).attr('src', $(this).attr('data-animate'));
       $(this).attr('data-state', 'animate');
@@ -127,7 +145,7 @@ function addToFavorites(){
       $(this).attr('src', $(this).attr('data-still'));
       $(this).attr('data-state', 'still');
     }
-    $(this).attr('data-clicked', 'true');    
+    $(this).attr('data-clicked', 'true');
 
   }
   function hoverEnterState() {
@@ -175,12 +193,12 @@ function addToFavorites(){
 
 
   $(document).on('click', '.gif-btn', grabFromGiphy);
-
   $(document).on('click', '.gif-img', switchState);
+  $(document).on('click', '#clear-btn', clearStage);
   $(document).on('mouseenter', '.gif-img', hoverEnterState);
   $(document).on('mouseleave', '.gif-img', hoverExitState);
-  $(document).on('click', '.item', addToFavorites);
-
+  $(document).on('click', '#btn-favorite', addToFavorites);
+  $(document).on('click', '#download-img', downloadImage);
 
 
   // Calling the renderButtons function to display the initial buttons
