@@ -187,7 +187,7 @@ $(document).ready(function () {
     // Draw the received image into the canvas and insert the
     // canvas onto the DOM.    
     context.drawImage(downloadedImg, 0, 0);
-    $('#giphy-view').append(canvas);
+    // $('#giphy-view').append(canvas);
     // Construct the <a> link for a download attribute
 
     let dataUrl = canvas.toDataURL();
