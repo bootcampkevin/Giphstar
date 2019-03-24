@@ -13,12 +13,29 @@ $(document).ready(function () {
   let q = ''; //obtained from buttonInfo  
   let apiKey = 'SH5Sm7xZwnUdkahuKHmC8IIrmKfiFKKD';
   let limit = 10;
-  let favs =[];
+  // let favs = [];
+  
   $('#back-btn').hide();
   $('#clear-btn').hide();
   $('#favorites').hide();
   $('#fav-btn').hide();
   
+
+
+  // Load the favorites from localstorage.
+  // We need to use JSON.parse to turn the string retrieved from an array into a string
+  //TODO get back something I can iterate through to add the divs back onto the DOM
+  // favs = JSON.parse(localStorage.getItem('favorites'));
+  // console.log(favs);
+
+  // Checks to see if the favorites exist in localStorage and is an array currently
+  // If not, set a local favs variable to an empty array
+  // Otherwise favs is our current list of favorites
+  if (!Array.isArray(favs)) {
+    var favs = [];
+  }
+
+  //sample from giphy:
   // var xhr = $.get('http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key='+apiKey+'&limit=10');
   // xhr.done(function(data) { console.log('success got data', data); });
 
@@ -32,12 +49,10 @@ $(document).ready(function () {
     $('#giphy-view').show();   
     
     if(favs.length>0){
-      $('#fav-btn').show();
-    } 
-    
+      $('#fav-btn').show();      
+    }    
 
     q = ($(this).attr('data-name'));
-    // q =  q.replace(" ",'+');//doesn't seem to mind spaces...?
     //thanks to template literal readings...big arrow skills are my next target. and .map() 
     var queryURL = `${baseURL}${q}&api_key=${apiKey}&limit=${limit}`;
 
@@ -63,18 +78,11 @@ $(document).ready(function () {
           var giphySrcAnimate = payload[i].images.fixed_height.url;
           var giphySrcStill = payload[i].images.fixed_height_still.url;
 
-          //<img src="https://media2.giphy.com/media/8rFQp4kHXJ0gU/200_s.gif" 
-          //data-still="https://media2.giphy.com/media/8rFQp4kHXJ0gU/200_s.gif" 
-          //data-animate="https://media2.giphy.com/media/8rFQp4kHXJ0gU/200.gif" 
-          //data-state="still" class="gif">
-
-
           var giphyDiv = $('<div>');
           giphyDiv.addClass('giphy-div');
 
           // $(giphyDiv).append('<h2>' + giphyTitle + '</h2>');
-          // $(giphyDiv).append(`<p>Rating: ${giphyRating.toUpperCase()}</p>`);
-
+          
           var img = $('<img>');
           img.attr('src', giphySrcAnimate);
           img.attr('alt', giphyTitle);
@@ -86,12 +94,11 @@ $(document).ready(function () {
 
           $(giphyDiv).append(`<p>Rating: ${giphyRating.toUpperCase()}</p>`);
 
-
           let optionsDiv = $('<div>');
           optionsDiv.addClass('img-options');
 
-          let options = `<a class="item" href="${giphySrcAnimate}" download><span class="mx-2"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><div class="item" id="btn-favorite"><span class="mx-2"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</div>`;
-          // let options = `<a class="item" href="${giphySrcAnimate}" download><span class="mx-2"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><button type="button" class="btn" id="btn-favorite"><span class="mx-2"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</button>`;
+          let options = `<div class="item" id="download-img" data-url="${giphySrcAnimate}"><span class="mx-2"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</div><div class="item" id="btn-favorite"><span class="mx-2"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</div>`;
+          // let options = `<a class="item" href="${giphySrcAnimate}" download><span class="mx-2"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><div class="item" id="btn-favorite"><span class="mx-2"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</div>`;
           // let options = `<a class="item" href="https://www.w3schools.com/images/myw3schoolsimaffddsfge.jpg" download><span class="mx-3"><img width="20" height="20" src="./assets/images/dl.svg"></span>Download</a><a class="item" href="#"><span class="mx-3"><img width="20" height="20" src="./assets/images/fav.svg"></span>Favorite!</a>`;
           //https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_a_download
           //SO, I learned that chrome 65 and above, cross-origin download is not possible. 
@@ -101,7 +108,6 @@ $(document).ready(function () {
           giphyDiv.append(optionsDiv);
 
           $('#giphy-view').prepend(giphyDiv);
-
         }
 
       });
@@ -115,7 +121,10 @@ $(document).ready(function () {
         
     let fav = $(this).parents('.giphy-div');
     // $(fav).clone().appendTo('#favorites');
+        
     favs.push(fav);
+    //TODO figure out why I can't parse this back correctly.
+    localStorage.setItem('favorites', JSON.stringify(favs));
   }
 
   function toggleForAndShowFavorites(){
@@ -130,8 +139,7 @@ $(document).ready(function () {
       var giphDiv = $('<div>');
       giphDiv.append(favs[i]);
       $('#favorites').prepend(giphDiv);      
-    }
-    // $('#giphy-view').prepend(giphyDiv);
+    }   
   }
 
   function toggleAndShowMain(){
@@ -140,9 +148,7 @@ $(document).ready(function () {
     $('#fav-btn').show();
     $('#favorites').hide();
     $('#container-header').html('');
-    $('#clear-btn').show();
-
-    
+    $('#clear-btn').show();    
   }
   
   function clearStage(){  
@@ -150,8 +156,54 @@ $(document).ready(function () {
     $('#giphy-view').empty();   
   }
 
-  function downloadImage() {
+  //TODO I have no clue on how to download. 
+  //https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image#What_is_a_.22tainted.22_canvas.3F
+  //See let options =
+  //!Important. Stumbled upon https://cors-image-example.glitch.me/
+  //Stealing coding ideas may happen...I found canvas2image.js as a possible solution if I can't write it myself.     
+ let downloadedImg;
+  function downloadImage() {              
+        // console.log($(this).parents('.giphy-div').children().eq(0).attr('src'));    
+               
+        let imageURL = $(this).parents('.giphy-div').children().eq(0).attr('src');
+       
+        downloadedImg = new Image;
+      
+        // Request cross-origin access        
+        downloadedImg.crossOrigin = 'Anonymous'; 
+        downloadedImg.addEventListener('load', imageReceived, false);
+        downloadedImg.src = imageURL;       
 
+  }
+
+  function imageReceived() {
+    let canvas = document.createElement('canvas');
+    let context = canvas.getContext('2d');  
+    // Adjust the canvas size to match the received image
+    
+    canvas.width = downloadedImg.width;
+    canvas.height = downloadedImg.height;
+        
+    // Draw the received image into the canvas and insert the
+    // canvas onto the DOM.    
+    context.drawImage(downloadedImg, 0, 0);
+    $('#giphy-view').append(canvas);
+    // Construct the <a> link for a download attribute
+
+    let dataUrl = canvas.toDataURL();
+    // console.log(dataUrl);
+    
+    var a = $('<a>').attr('href', dataUrl).attr('download', 'downloaded-img').appendTo('body');
+    a[0].click();
+    a.click();
+    a.remove();
+    //FINALLY, bitches. That was crazy! Max and Trevor and Sepideh, is that really in our HW? 
+    // try {
+    //   localStorage.setItem('saved-image-canvas', canvas.toDataURL('image/png'));      
+    // }
+    // catch(err) {
+    //   console.log('Error: ' + err);
+    // }    
   }
 
   // Function for displaying giphy data
@@ -170,7 +222,6 @@ $(document).ready(function () {
       $('#buttons-view').append(appendButton);
     }
   }
-
   function switchState() {
     let state = $(this).attr('data-state');
     // If the clicked image's state is still, update its src attribute to what its data-animate value is.

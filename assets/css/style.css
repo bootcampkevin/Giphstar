@@ -31,7 +31,7 @@ a.item:hover {
   /* background-color: blue; */
   text-decoration: none;
 }
-#btn-favorite{
+#btn-favorite, #download-img{
   cursor: pointer;
 }
 
