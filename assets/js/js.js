@@ -19,22 +19,24 @@ $(document).ready(function () {
   $('#clear-btn').hide();
   $('#favorites').hide();
   $('#fav-btn').hide();
-  
-
 
   // Load the favorites from localstorage.
   // We need to use JSON.parse to turn the string retrieved from an array into a string
   //TODO get back something I can iterate through to add the divs back onto the DOM
   // favs = JSON.parse(localStorage.getItem('favorites'));
   // console.log(favs);
-
+  
+  
   // Checks to see if the favorites exist in localStorage and is an array currently
   // If not, set a local favs variable to an empty array
   // Otherwise favs is our current list of favorites
   if (!Array.isArray(favs)) {
     var favs = [];
   }
-
+  if (favs.length > 0) {
+    $('#fav-btn').show();    
+  }
+  
   //sample from giphy:
   // var xhr = $.get('http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key='+apiKey+'&limit=10');
   // xhr.done(function(data) { console.log('success got data', data); });
@@ -124,7 +126,8 @@ $(document).ready(function () {
         
     favs.push(fav);
     //TODO figure out why I can't parse this back correctly.
-    localStorage.setItem('favorites', JSON.stringify(favs));
+    localStorage.setItem('favorites', JSON.stringify(favs));    
+    console.log(JSON.stringify(favs));
   }
 
   function toggleForAndShowFavorites(){
