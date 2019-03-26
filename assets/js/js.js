@@ -1,7 +1,6 @@
 //TODO
 //I want to add a remove button for the favorites array. 
 //I want to add local storage
-//I want to change all functions to big arrow where feasible
 
 $(document).ready(function () {
 
@@ -127,7 +126,7 @@ $(document).ready(function () {
     favs.push(fav);
     //TODO figure out why I can't parse this back correctly.
     localStorage.setItem('favorites', JSON.stringify(favs));    
-    console.log(JSON.stringify(favs));
+    // console.log(JSON.stringify(favs));
   }
 
   function toggleForAndShowFavorites(){
